@@ -87,8 +87,8 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <Link>
-      <AdditionalDependencies>vccorlibd.lib;msvcrtd.lib;SDL2.lib;libgallium_wgl.lib;opengl32.lib;zlib.lib;d3d12.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(VCInstallDir)\lib\store\arm64;$(VCInstallDir)\lib\arm64;..\..\..\mesa-uwp\lib\$(Platform);..\..\..\SDL-uwp-gl\lib\$(Platform);..\..\..\glew-uwp\lib\$(Platform)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vccorlibd.lib;msvcrtd.lib;SDL2.lib;libgallium_wgl.lib;opengl32.lib;libuwp.lib;z.lib;d3d12.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(VCInstallDir)\lib\store\arm64;$(VCInstallDir)\lib\arm64;$(ProjectDir)</AdditionalLibraryDirectories>
       <AdditionalOptions>/nodefaultlib:vccorlibd /nodefaultlib:msvcrtd %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ClCompile>
@@ -105,8 +105,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <Link>
-      <AdditionalDependencies>SDL2.lib;libgallium_wgl.lib;opengl32.lib;zlib.lib;d3d12.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(VCInstallDir)\lib\store\arm64;$(VCInstallDir)\lib\arm64;..\..\..\mesa-uwp\lib\$(Platform);..\..\..\SDL-uwp-gl\lib\$(Platform);..\..\..\glew-uwp\lib\$(Platform)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;libgallium_wgl.lib;opengl32.lib;libuwp.lib;z.lib;d3d12.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(VCInstallDir)\lib\store\arm64;$(VCInstallDir)\lib\arm64;$(ProjectDir)</AdditionalLibraryDirectories>
       <AdditionalOptions>/nodefaultlib:vccorlibd /nodefaultlib:msvcrtd %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ClCompile>
@@ -123,16 +123,16 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <AdditionalDependencies>vccorlibd.lib;msvcrtd.lib;SDL2.lib;libgallium_wgl.lib;opengl32.lib;z.lib;d3d12.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(VCInstallDir)\lib\store\amd64;$(VCInstallDir)\lib\amd64;..\..\..\mesa-uwp\lib\$(Platform);..\..\..\SDL-uwp-gl\lib\$(Platform);..\..\..\glew-uwp\lib\$(Platform)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vccorlibd.lib;msvcrtd.lib;SDL2.lib;libgallium_wgl.lib;opengl32.lib;libuwp.lib;z.lib;d3d12.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(VCInstallDir)\lib\store\amd64;$(VCInstallDir)\lib\amd64;$(ProjectDir)</AdditionalLibraryDirectories>
       <AdditionalOptions>/nodefaultlib:vccorlibd /nodefaultlib:msvcrtd %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ClCompile>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>..\..\Src;..\..\Src\OSD;..\..\Src\OSD\SDL;..\..\Src\OSD\Windows;..\..\..\uwp-dep\x64\include;..\..\..\SDL-uwp-gl\include;..\..\..\mesa-uwp\include;..\..\Src\Pkgs;..\..\..\glew-uwp\include;..\..\Src\Pkgs\GL</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Src;..\..\Src\OSD;..\..\Src\OSD\SDL;..\..\Src\OSD\Windows;..\..\..\uwp-dep\x64\include;..\..\..\SDL-uwp-gl\include;..\..\..\mesa-uwp\include;..\..\Src\Pkgs;..\..\..\glew-uwp\include;..\..\Src\Pkgs\GL;..\..\Src\Pkgs\SDL2_net</AdditionalIncludeDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
-      <PreprocessorDefinitions>_XBOX_UWP;__WINRT__;SUPERMODEL_WIN32;INLINE=static __inline;_MBCS;_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;IMGUI_IMPL_OPENGL_LOADER_CUSTOM;_DEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NET_BOARD;_WINSOCK_DEPRECATED_NO_WARNINGS;_XBOX_UWP;__WINRT__;SUPERMODEL_WIN32;INLINE=static __inline;_MBCS;_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;IMGUI_IMPL_OPENGL_LOADER_CUSTOM;_DEBUG</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <CompileAsWinRT>false</CompileAsWinRT>
@@ -141,16 +141,16 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
-      <AdditionalDependencies>SDL2.lib;libgallium_wgl.lib;opengl32.lib;z.lib;d3d12.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(VCInstallDir)\lib\store\amd64;$(VCInstallDir)\lib\amd64;..\..\..\mesa-uwp\lib\$(Platform);..\..\..\SDL-uwp-gl\lib\$(Platform);..\..\..\glew-uwp\lib\$(Platform)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;libgallium_wgl.lib;opengl32.lib;libuwp.lib;z.lib;d3d12.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(VCInstallDir)\lib\store\amd64;$(VCInstallDir)\lib\amd64;$(ProjectDir)</AdditionalLibraryDirectories>
       <AdditionalOptions>/nodefaultlib:vccorlibd /nodefaultlib:msvcrtd %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ClCompile>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>..\..\Src;..\..\Src\OSD;..\..\Src\OSD\SDL;..\..\Src\OSD\Windows;..\..\..\uwp-dep\x64\include;..\..\..\SDL-uwp-gl\include;..\..\..\mesa-uwp\include;..\..\Src\Pkgs;..\..\..\glew-uwp\include;..\..\Src\Pkgs\GL</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Src;..\..\Src\OSD;..\..\Src\OSD\SDL;..\..\Src\OSD\Windows;..\..\..\uwp-dep\x64\include;..\..\..\SDL-uwp-gl\include;..\..\..\mesa-uwp\include;..\..\Src\Pkgs;..\..\..\glew-uwp\include;..\..\Src\Pkgs\GL;..\..\Src\Pkgs\SDL2_net</AdditionalIncludeDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
-      <PreprocessorDefinitions>_XBOX_UWP;__WINRT__;SUPERMODEL_WIN32;INLINE=static __inline;_MBCS;_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;IMGUI_IMPL_OPENGL_LOADER_CUSTOM;NDEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NET_BOARD;_XBOX_UWP;__WINRT__;SUPERMODEL_WIN32;INLINE=static __inline;_MBCS;_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;IMGUI_IMPL_OPENGL_LOADER_CUSTOM;NDEBUG</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <CompileAsWinRT>false</CompileAsWinRT>
@@ -250,7 +250,21 @@
     <ClCompile Include="..\..\Src\Model3\DriveBoard\JoystickBoard.cpp" />
     <ClCompile Include="..\..\Src\Model3\DriveBoard\SkiBoard.cpp" />
     <ClCompile Include="..\..\Src\Model3\DriveBoard\WheelBoard.cpp" />
-    <!-- Network - excluded for UWP (requires SDL_net) -->
+    <!-- Network -->
+    <ClCompile Include="..\..\Src\Network\NetBoard.cpp" />
+    <ClCompile Include="..\..\Src\Network\SimNetBoard.cpp" />
+    <ClCompile Include="..\..\Src\Network\TCPReceive.cpp" />
+    <ClCompile Include="..\..\Src\Network\TCPSend.cpp" />
+    <ClCompile Include="..\..\Src\Network\TCPSendAsync.cpp" />
+    <!-- SDL2_net -->
+    <ClCompile Include="..\..\Src\Pkgs\SDL2_net\SDLnet.c">
+      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Pkgs\SDL2_net\SDLnetTCP.c" />
+    <ClCompile Include="..\..\Src\Pkgs\SDL2_net\SDLnetUDP.c">
+      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Pkgs\SDL2_net\SDLnetselect.c" />
     <!-- Sound -->
     <ClCompile Include="..\..\Src\Sound\SCSP.cpp" />
     <ClCompile Include="..\..\Src\Sound\SCSPDSP.cpp" />
@@ -285,23 +299,27 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\uwp-dep\x64\bin\opengl32.dll">
+    <None Include="opengl32.dll">
       <DeploymentContent>true</DeploymentContent>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\..\uwp-dep\x64\bin\libgallium_wgl.dll">
+    <None Include="libgallium_wgl.dll">
       <DeploymentContent>true</DeploymentContent>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\..\uwp-dep\x64\bin\z-1.dll">
+    <None Include="z-1.dll">
       <DeploymentContent>true</DeploymentContent>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\..\uwp-dep\x64\bin\SDL2.dll">
+    <None Include="SDL2.dll">
       <DeploymentContent>true</DeploymentContent>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\..\uwp-dep\x64\bin\dxil.dll">
+    <None Include="dxil.dll">
+      <DeploymentContent>true</DeploymentContent>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="libuwp.dll">
       <DeploymentContent>true</DeploymentContent>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

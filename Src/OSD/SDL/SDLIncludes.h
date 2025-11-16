@@ -37,7 +37,7 @@
 #include <SDL_audio.h>
 #endif
 
-#if defined(NET_BOARD) && !defined(_XBOX_UWP)
+#if defined(NET_BOARD)
 #ifdef SUPERMODEL_OSX
 #include <SDL2_net/SDL_net.h>
 #else
