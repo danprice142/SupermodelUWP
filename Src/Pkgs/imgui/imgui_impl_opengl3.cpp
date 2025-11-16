@@ -160,6 +160,9 @@
 #else
 #include <GLES3/gl3.h>          // Use GL ES 3
 #endif
+#elif defined(IMGUI_IMPL_OPENGL_LOADER_CUSTOM)
+// Custom OpenGL loader - use GLEW for UWP builds
+#include <GL/glew.h>
 #elif !defined(IMGUI_IMPL_OPENGL_LOADER_CUSTOM)
 // Modern desktop OpenGL doesn't have a standard portable header file to load OpenGL function pointers.
 // Helper libraries are often used for this purpose! Here we are using our own minimal custom loader based on gl3w.
@@ -189,7 +192,9 @@
 // A desktop ES context can technically compile fine with our loader, so we also perform a runtime checks
 #if !defined(IMGUI_IMPL_OPENGL_ES2) && !defined(IMGUI_IMPL_OPENGL_ES3)
 #define IMGUI_IMPL_OPENGL_HAS_EXTENSIONS        // has glGetIntegerv(GL_NUM_EXTENSIONS)
-#define IMGUI_IMPL_OPENGL_MAY_HAVE_POLYGON_MODE // may have glPolygonMode()
+#if !defined(_XBOX_UWP)
+#define IMGUI_IMPL_OPENGL_MAY_HAVE_POLYGON_MODE // may have glPolygonMode() (not supported by Mesa on Xbox UWP)
+#endif
 #endif
 
 // Desktop GL 2.1+ and GL ES 3.0+ have glBindBuffer() with GL_PIXEL_UNPACK_BUFFER target.

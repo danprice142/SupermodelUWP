@@ -17,9 +17,9 @@
 #include "../Src/Inputs/Inputs.h"
 #include "Main.h"
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(_XBOX_UWP)
     #include "../Src/OSD/Windows/DirectInputSystem.h"
-#endif // _WIN32
+#endif // _WIN32 && !_XBOX_UWP
 
 /*
 Quick description on the GUI stuff
@@ -528,11 +528,11 @@ static std::shared_ptr<CInputs> GetInputSystem(Util::Config::Node& config, SDL_W
     if (selectedInputSystem == "sdl")               { inputSystem = std::shared_ptr<CInputSystem>(new CSDLInputSystem(config, false));}
     else if (selectedInputSystem == "sdlgamepad")   { inputSystem = std::shared_ptr<CInputSystem>(new CSDLInputSystem(config, true)); }
 
-#ifdef SUPERMODEL_WIN32
+#if defined(SUPERMODEL_WIN32) && !defined(_XBOX_UWP)
     else if (selectedInputSystem == "dinput")       { inputSystem = std::shared_ptr<CInputSystem>(new CDirectInputSystem(config, window, false, false));}
     else if (selectedInputSystem == "xinput")       { inputSystem = std::shared_ptr<CInputSystem>(new CDirectInputSystem(config, window, false, true)); }
     else if (selectedInputSystem == "rawinput")     { inputSystem = std::shared_ptr<CInputSystem>(new CDirectInputSystem(config, window, true, false)); }
-#endif // SUPERMODEL_WIN32
+#endif // SUPERMODEL_WIN32 && !_XBOX_UWP
 
     // initialise 
     if (inputSystem) {
@@ -724,7 +724,6 @@ static void GUI(const ImGuiIO& io, Util::Config::Node& config, const std::map<st
 
     // Rendering
     ImGui::Render();
-    
     glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
     glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -748,9 +747,9 @@ static std::string GetRomPath(int selectedGame, const std::map<std::string, Game
 
 std::vector<std::string> RunGUI(const std::string& configPath, Util::Config::Node& config)
 {
-    // Initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cerr << "SDL could not initialize! Error: " << SDL_GetError() << std::endl;
+    // Initialize SDL video subsystem (SDL is already initialized by main())
+    if (SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_JOYSTICK) < 0) {
+        std::cerr << "SDL video subsystem could not initialize! Error: " << SDL_GetError() << std::endl;
         return {};
     }
 
@@ -763,7 +762,7 @@ std::vector<std::string> RunGUI(const std::string& configPath, Util::Config::Nod
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_INPUT_FOCUS);
+    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_INPUT_FOCUS);
 
     // Create SDL window
     SDL_Window* window = SDL_CreateWindow("SuperSetup", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, window_flags);
@@ -772,6 +771,12 @@ std::vector<std::string> RunGUI(const std::string& configPath, Util::Config::Nod
         SDL_Quit();
         return {};
     }
+
+    // Ensure window has focus for input (critical for UWP)
+    SDL_RaiseWindow(window);
+    SDL_SetWindowInputFocus(window);
+    SDL_SetWindowGrab(window, SDL_TRUE);
+    SDL_CaptureMouse(SDL_TRUE);
 
     // Create OpenGL context
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
@@ -784,6 +789,16 @@ std::vector<std::string> RunGUI(const std::string& configPath, Util::Config::Nod
 
     SDL_GL_MakeCurrent(window, glContext);
     SDL_GL_SetSwapInterval(1); // Enable vsync
+
+    // Initialize GLEW
+    GLenum glewErr = glewInit();
+    if (glewErr != GLEW_OK) {
+        std::cerr << "GLEW initialization failed: " << glewGetErrorString(glewErr) << std::endl;
+        SDL_GL_DeleteContext(glContext);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return {};
+    }
 
     // Setup ImGui context
     IMGUI_CHECKVERSION();
@@ -819,9 +834,7 @@ std::vector<std::string> RunGUI(const std::string& configPath, Util::Config::Nod
     SDL_Event event{};
 
     while (running) {
-
         while (SDL_PollEvent(&event)) {
-
             ImGui_ImplSDL2_ProcessEvent(&event);
 
             if (event.type == SDL_QUIT) {

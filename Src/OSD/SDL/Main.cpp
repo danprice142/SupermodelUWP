@@ -74,9 +74,13 @@
 #include <algorithm>
 #include <GL/glew.h>
 
-#ifdef SUPERMODEL_WIN32
-#include "DirectInputSystem.h"
-#include "WinOutputs.h"
+#if defined(SUPERMODEL_WIN32) && !defined(_XBOX_UWP)
+#include "../Windows/DirectInputSystem.h"
+#include "../Windows/WinOutputs.h"
+#endif
+
+#ifdef __WINRT__
+#include "FilePicker.h"
 #endif
 
 #include "Supermodel.h"
@@ -88,7 +92,9 @@
 #include "SDLInputSystem.h"
 #include "SDLIncludes.h"
 #include "Debugger/SupermodelDebugger.h"
+#ifndef _XBOX_UWP
 #include "Graphics/Legacy3D/Legacy3D.h"
+#endif
 #include "Graphics/New3D/New3D.h"
 #include "Model3/IEmulator.h"
 #include "Model3/Model3.h"
@@ -1001,7 +1007,12 @@ int Supermodel(const Game &game, ROMSet *rom_set, IEmulator *Model3, CInputs *In
   SuperAA* superAA = new SuperAA(aaValue, CRTcolors);
   superAA->Init(totalXRes, totalYRes);  // pass actual frame sizes here
   CRender2D *Render2D = new CRender2D(s_runtime_config);
+#ifdef _XBOX_UWP
+  // UWP only supports New3D engine (Legacy3D uses old OpenGL 1.x not available in Mesa)
+  IRender3D *Render3D = new New3D::CNew3D(s_runtime_config, Model3->GetGame().name);
+#else
   IRender3D *Render3D = s_runtime_config["New3DEngine"].ValueAs<bool>() ? ((IRender3D *) new New3D::CNew3D(s_runtime_config, Model3->GetGame().name)) : ((IRender3D *) new Legacy3D::CLegacy3D(s_runtime_config));
+#endif
 
   UpscaleMode upscaleMode = (UpscaleMode)s_runtime_config["UpscaleMode"].ValueAs<int>();
 
@@ -2206,13 +2217,15 @@ static ParsedCommandLine ParseCommandLine(int argc, char **argv)
  */
 int main(int argc, char **argv)
 {
+#ifdef __WINRT__
+  SDL_SetMainReady();
+#endif
   Title();
   WriteDefaultConfigurationFileIfNotPresent();
 
   bool loadGUI = false;
   if (argc <= 1)
   {
-    //Help();
     loadGUI = true;
   }
 
@@ -2330,6 +2343,10 @@ int main(int argc, char **argv)
   std::shared_ptr<Debugger::CSupermodelDebugger> Debugger;
 #endif // SUPERMODEL_DEBUGGER
   std::string selectedInputSystem = s_runtime_config["InputSystem"].ValueAs<std::string>();
+#ifdef _XBOX_UWP
+  // UWP/Xbox only supports SDL-based input systems; force to "sdl" even if config says otherwise
+  selectedInputSystem = "sdl";
+#endif
 
   aaValue = s_runtime_config["Supersampling"].ValueAs<int>();
   CRTcolors = (CRTcolor)s_runtime_config["CRTcolors"].ValueAs<int>();
@@ -2364,7 +2381,7 @@ int main(int argc, char **argv)
     InputSystem = std::shared_ptr<CInputSystem>(new CSDLInputSystem(s_runtime_config, false));
   else if (selectedInputSystem == "sdlgamepad")
     InputSystem = std::shared_ptr<CInputSystem>(new CSDLInputSystem(s_runtime_config, true));
-#ifdef SUPERMODEL_WIN32
+#if defined(SUPERMODEL_WIN32) && !defined(_XBOX_UWP)
   else if (selectedInputSystem == "dinput")
     InputSystem = std::shared_ptr<CInputSystem>(new CDirectInputSystem(s_runtime_config, s_window, false, false));
   else if (selectedInputSystem == "xinput")
@@ -2407,7 +2424,7 @@ int main(int argc, char **argv)
     goto Exit;
 
   // Create outputs
-#ifdef SUPERMODEL_WIN32
+#if defined(SUPERMODEL_WIN32) && !defined(_XBOX_UWP)
   {
     std::string outputs = s_runtime_config["Outputs"].ValueAs<std::string>();
     if (outputs == "none")

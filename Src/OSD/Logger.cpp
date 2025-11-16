@@ -223,6 +223,11 @@ void CConsoleErrorLogger::ErrorLog(const char *fmt, va_list vl)
   char string[4096];
   vsnprintf(string, sizeof(string), fmt, vl);
   fprintf(stderr, "Error: %s\n", string);
+#ifdef _WIN32
+  OutputDebugStringA("Error: ");
+  OutputDebugStringA(string);
+  OutputDebugStringA("\n");
+#endif
 }
 
 /*
